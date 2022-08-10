@@ -14,7 +14,6 @@ const LongMenu = ({
   open = false,
   actions = [],
   anchorEl = [],
-  item = {},
   handleClose = () => {},
 }) => {
   const navigate = useNavigate()

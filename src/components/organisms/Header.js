@@ -9,6 +9,7 @@ import {
     Avatar,
     IconButton,
     Box,
+    Modal,
  } from '@material-ui/core'
 import LongMenu from '../molecules/LongMenu';
 import { Menu } from '@material-ui/icons';
@@ -54,13 +55,19 @@ const Header = () => {
 
   const actions = [
     {
-      title: "マイアカウント",
+      title: "自分の情報",
       color: "inherit",
-      to: `/account`,
+      to: `/employee`,
+    },
+    {
+      title: "自分の名刺",
+      color: "inherit",
+      to: `/employee/cards`,
     },
     {
       title: "ログアウト",
       color: "error",
+      to: `/`,
       onClick: () => {},
     },
   ]
@@ -116,6 +123,9 @@ const Header = () => {
         item={userData}
         handleClose={handleMenuClose}
       />
+      <Modal>
+        
+      </Modal>
     </>
   )
 }
