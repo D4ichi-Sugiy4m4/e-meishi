@@ -1,7 +1,5 @@
 import React from "react";
 import { Box, Button, Grid, Dialog, TextField, Typography } from "@material-ui/core";
-import { Cancel, Check } from "@material-ui/icons";
-
 
 const InfoModal = ({
   title = "",
