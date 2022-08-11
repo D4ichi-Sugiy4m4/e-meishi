@@ -1,11 +1,47 @@
 import { Box, Grid, Typography, Divider, Fab } from "@material-ui/core";
-import { Add } from "@material-ui/icons";
+import { Add, Cancel, Check } from "@material-ui/icons";
 import React, { useState } from "react";
 import OthersInfoCard from "components/molecules/InfoCard";
 import InfoModal from "components/molecules/InfoModal";
 
+const addActions = [
+  {
+    title: "追加",
+    icon: <Check />,
+    variant: "contained",
+    color: "primary",
+    onClick: () => {}
+  },
+  {
+    title: "キャンセル",
+    icon: <Cancel />,
+    variant: "contained",
+    color: "secondary",
+    onClick: () => {}
+  }
+];
+
+const editActions = [
+  {
+    title: "更新",
+    icon: <Check />,
+    variant: "contained",
+    color: "primary",
+    onClick: () => {}
+  },
+  {
+    title: "キャンセル",
+    icon: <Cancel />,
+    variant: "contained",
+    color: "secondary",
+    onClick: () => {}
+  }
+];
+
 const List = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenAdd, setIsOpenAdd] = useState(false);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+
   return (
     <>
       <Box px={6} pt={8}>
@@ -27,6 +63,7 @@ const List = () => {
                   img={item.img}
                   name={item.name}
                   company={item.company}
+                  setIsOpenDialog={setIsOpenEdit}
                 />
               </Grid>
             ))}
@@ -41,16 +78,27 @@ const List = () => {
           right: "30px",
         }}
         onClick={() => {
-          setIsOpen(true);
+          setIsOpenAdd(true);
         }}
       >
         <Add />
       </Fab>
       <InfoModal
         title={"外部者を追加する"}
-        open={isOpen}
+        open={isOpenAdd}
+        variant={"add"}
+        actions={addActions}
         handleOnClose={() => {
-          setIsOpen(false);
+          setIsOpenAdd(false);
+        }}
+      />
+      <InfoModal
+        title={"外部者を編集する"}
+        open={isOpenEdit}
+        variant={"edit"}
+        actions={editActions}
+        handleOnClose={() => {
+          setIsOpenEdit(false);
         }}
       />
     </>

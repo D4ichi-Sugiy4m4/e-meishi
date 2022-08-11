@@ -18,24 +18,32 @@ const InfoCard = ({
   img = "",
   name = "",
   company = "",
+  setIsOpenDialog = () => {}
 }) => {
-  const [open, setOpen] = useState(false)
+  const [isOpenMenu, setIsOpenMenu] = useState(false)
   const anchorRef = useRef(null)
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen)
+
+  const handleToggleMenu = () => {
+    setIsOpenMenu((prevOpen) => !prevOpen)
   }
-  const handleClose = (e) => {
+  const handleToggleDialog = () => {
+    setIsOpenDialog((prevOpen) => !prevOpen)
+  }
+  const handleCloseMenu = (e) => {
     if (anchorRef.current && anchorRef.current.contains(e.target)) {
       return;
     }
-    setOpen(false)
+    setIsOpenMenu(false)
   }
 
   const actions = [
     {
       title: "この人の情報",
       color: "inherit",
-      to: `/others/${othersId}`,
+      onClick: () => {
+        handleToggleMenu()
+        handleToggleDialog()
+      }
     },
     {
         title: "この人の名刺",
@@ -59,7 +67,7 @@ const InfoCard = ({
                 id={`info-about-${name}`}
                 aria-label={`info-about-${name}`}
                 ref={anchorRef}
-                onClick={handleToggle}
+                onClick={handleToggleMenu}
               >
                 <MoreVert style={{ color: grey[600] }}/>
               </IconButton>
@@ -91,8 +99,8 @@ const InfoCard = ({
       <LongMenu
         anchorEl={anchorRef.current}
         actions={actions}
-        open={open}
-        handleClose={handleClose}
+        open={isOpenMenu}
+        handleClose={handleCloseMenu}
       />
     </>
   )

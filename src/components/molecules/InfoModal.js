@@ -6,6 +6,8 @@ import { Cancel, Check } from "@material-ui/icons";
 const InfoModal = ({
   title = "",
   open = false,
+  variant = "",
+  actions = [],
   handleOnClose = () => {},
   handleOnSubmit = () => {},
 }) => {
@@ -20,35 +22,35 @@ const InfoModal = ({
         </Typography>
       </Box>
       <Box p={2}>
-        <TextField>
-
-        </TextField>
+        {variant==="add" ? (
+          <TextField>
+            
+          </TextField>
+        ) : null}
+        {variant==="info" ? (
+          <Typography>
+            {"aaaaa"}
+          </Typography>
+        ) : null}
+        
       </Box>
       <Box p={2}>
         <Grid container spacing={2}>
-          <Grid item>
-            <Button
-              startIcon={<Check />}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                handleOnSubmit()
-                handleOnClose()
-              }}
-            >
-              追加
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              startIcon={<Cancel />}
-              variant="contained"
-              color="secondary"
-              onClick={handleOnClose}
-            >
-              キャンセル
-            </Button>
-          </Grid>
+          {actions.map((action) => (
+            <Grid item>
+              <Button
+                startIcon={action.icon}
+                variant={action.variant}
+                color={action.color}
+                onClick={() => {
+                  handleOnSubmit()
+                  handleOnClose()
+                }}
+              >
+                {action.title}
+              </Button>
+            </Grid>
+          ))}
         </Grid>
       </Box>
     </Dialog>
