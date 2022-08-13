@@ -24,7 +24,6 @@ const DrawerMenu = ({
         open={open}
         onClose={onClose}
         variant="temporary"
-        fullWidth
         ModalProps={{
           keepMounted: true,
         }}

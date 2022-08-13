@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState } from "react";
 import {
   Grid,
   Card,
@@ -6,82 +6,75 @@ import {
   IconButton,
   Typography,
   CardHeader,
-  Divider, 
+  Divider,
   Paper,
-} from "@material-ui/core"
-import { grey } from "@material-ui/core/colors"
-import { MoreVert } from "@material-ui/icons"
-import LongMenu from "./LongMenu"
+} from "@material-ui/core";
+import { grey } from "@material-ui/core/colors";
+import { MoreVert } from "@material-ui/icons";
+import LongMenu from "./LongMenu";
 
 const InfoCard = ({
-    othersId = "",
+  othersId = "",
   img = "",
   name = "",
   company = "",
-  setIsOpenDialog = () => {}
+  setIsOpenDialog = () => {},
 }) => {
-  const [isOpenMenu, setIsOpenMenu] = useState(false)
-  const anchorRef = useRef(null)
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const anchorRef = useRef(null);
 
   const handleToggleMenu = () => {
-    setIsOpenMenu((prevOpen) => !prevOpen)
-  }
+    setIsOpenMenu((prevOpen) => !prevOpen);
+  };
   const handleToggleDialog = () => {
-    setIsOpenDialog((prevOpen) => !prevOpen)
-  }
+    setIsOpenDialog((prevOpen) => !prevOpen);
+  };
   const handleCloseMenu = (e) => {
     if (anchorRef.current && anchorRef.current.contains(e.target)) {
       return;
     }
-    setIsOpenMenu(false)
-  }
+    setIsOpenMenu(false);
+  };
 
   const actions = [
     {
       title: "この人の情報",
       color: "inherit",
       onClick: () => {
-        handleToggleMenu()
-        handleToggleDialog()
-      }
+        handleToggleMenu();
+        handleToggleDialog();
+      },
     },
     {
-        title: "この人の名刺",
-        color: "inherit",
-        to: `/others/${othersId}/cards`,
-      },
+      title: "この人の名刺",
+      color: "inherit",
+      to: `/others/${othersId}/cards`,
+    },
     {
       title: "人物を削除",
       color: "error",
       onClick: () => {},
     },
-  ]
+  ];
 
   return (
     <>
-      <Grid item key={img}>
+      <Grid item key={othersId}>
         <Paper>
-          <Card style={{backgroundColor: grey[50]}} key={img}>
-            <CardHeader action={
+          <Card style={{ backgroundColor: grey[50] }} key={othersId}>
+            <CardHeader
+              action={
                 <IconButton
-                id={`info-about-${name}`}
-                aria-label={`info-about-${name}`}
-                ref={anchorRef}
-                onClick={handleToggleMenu}
-              >
-                <MoreVert style={{ color: grey[600] }}/>
-              </IconButton>
-            } 
-            title={
-              <Typography>
-                {name}
-              </Typography>
-            }
-            subheader={
-              <Typography>
-                {company}
-              </Typography>
-            }
+                  id={`info-about-${name}`}
+                  aria-label={`info-about-${name}`}
+                  ref={anchorRef}
+                  onClick={handleToggleMenu}
+                >
+                  <MoreVert style={{ color: grey[600] }} />
+                </IconButton>
+              }
+              title={<Typography>{name}</Typography>}
+              subheader={<Typography>{company}</Typography>}
             />
             <Divider />
             <CardContent>
@@ -103,7 +96,7 @@ const InfoCard = ({
         handleClose={handleCloseMenu}
       />
     </>
-  )
-}
+  );
+};
 
-export default InfoCard
+export default InfoCard;
