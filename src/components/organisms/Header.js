@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   makeStyles,
   AppBar,
@@ -39,15 +39,14 @@ const modalActions = [
 ];
 
 const userData = {
-  userId: "yUGP79BPN7",
-  img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  companyName: "株式会社Breakfast",
-  sectionPosition: "営業部 副部長",
-  nameLast: "Hoge",
-  nameFirst: "Huga",
+  // userId: "yUGP79BPN7",
+  // img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
+  company: "株式会社Breakfast",
+  department: "営業部",
+  rank: "副部長",
+  name: "Hoge Huga",
+  phone: "090-0000-0000",
   mail: "hoge@huga.com",
-  companyTel: "090-0000-0000",
-  width: "40%",
 };
 
 const labels = ["会社名", "部署", "役職", "名前", "電話番号", "メールアドレス"];
@@ -103,6 +102,11 @@ const Header = () => {
     },
   ];
 
+  useEffect(() => {
+    setItems(userData) 
+  // eslint-disable-next-line no-sparse-arrays
+  }, [, isOpenModal])
+
   return (
     <>
       <AppBar position="fixed">
@@ -143,7 +147,6 @@ const Header = () => {
         open={MenuOpen}
         actions={actions}
         anchorEl={anchorRef.current}
-        item={userData}
         handleClose={handleMenuClose}
       />
       <InfoModal
@@ -155,14 +158,6 @@ const Header = () => {
         setItems={setItems}
         handleOnClose={() => {
           setIsOpenModal(false);
-          setItems({
-            company: "",
-            department: "",
-            rank: "",
-            name: "",
-            phone: "",
-            email: "",
-          });
         }}
       />
     </>

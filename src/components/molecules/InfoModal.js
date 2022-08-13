@@ -26,6 +26,7 @@ const InfoModal = ({
           {Object.keys(items).map((item, index) => (
             <Grid item>
               <TextField
+                value={Object.values(items)[index]}
                 label={labels[index]}
                 onChange={(e) => {
                   setItems((prevState) => ({
