@@ -41,7 +41,7 @@ const LoginForm = () => {
               color="primary"
               variant="contained"
               component={Link}
-              to="/cards"
+              to="/home"
             >ログイン</Button>
           </Box>
         </Box>

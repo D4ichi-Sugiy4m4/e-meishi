@@ -38,9 +38,27 @@ const editActions = [
   }
 ];
 
+const labels = [
+  "会社名",
+  "部署",
+  "役職",
+  "名前",
+  "電話番号",
+  "メールアドレス"
+]
+
 const List = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
+
+  const [items, setItems] = useState({
+    company: "",
+    department: "",
+    rank: "",
+    name: "",
+    phone: "",
+    email: "",
+  });
 
   return (
     <>
@@ -86,19 +104,39 @@ const List = () => {
       <InfoModal
         title={"外部者を追加する"}
         open={isOpenAdd}
-        variant={"add"}
         actions={addActions}
+        labels={labels}
+        items={items}
+        setItems={setItems}
         handleOnClose={() => {
           setIsOpenAdd(false);
+          setItems({
+            company: "",
+            department: "",
+            rank: "",
+            name: "",
+            phone: "",
+            email: "",
+          });
         }}
       />
       <InfoModal
         title={"外部者を編集する"}
         open={isOpenEdit}
-        variant={"edit"}
         actions={editActions}
+        labels={labels}
+        items={items}
+        setItems={setItems}
         handleOnClose={() => {
           setIsOpenEdit(false);
+          setItems({
+            company: "",
+            department: "",
+            rank: "",
+            name: "",
+            phone: "",
+            email: "",
+          });
         }}
       />
     </>

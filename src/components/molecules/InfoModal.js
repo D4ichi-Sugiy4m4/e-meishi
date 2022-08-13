@@ -4,8 +4,10 @@ import { Box, Button, Grid, Dialog, TextField, Typography } from "@material-ui/c
 const InfoModal = ({
   title = "",
   open = false,
-  variant = "",
   actions = [],
+  labels = [],
+  items = {},
+  setItems = () => {},
   handleOnClose = () => {},
   handleOnSubmit = () => {},
 }) => {
@@ -20,17 +22,21 @@ const InfoModal = ({
         </Typography>
       </Box>
       <Box p={2}>
-        {variant==="add" ? (
-          <TextField>
-            
-          </TextField>
-        ) : null}
-        {variant==="info" ? (
-          <Typography>
-            {"aaaaa"}
-          </Typography>
-        ) : null}
-        
+        <Grid container spacing={2}>
+          {Object.keys(items).map((item, index) => (
+            <Grid item>
+              <TextField
+                label={labels[index]}
+                onChange={(e) => {
+                  setItems((prevState) => ({
+                    ...prevState,
+                    [item]: e.target.value
+                  }))
+                }}
+              />
+            </Grid>
+          ))}
+        </Grid>
       </Box>
       <Box p={2}>
         <Grid container spacing={2}>
