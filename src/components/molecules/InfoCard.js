@@ -18,7 +18,6 @@ const InfoCard = ({
   img = "",
   name = "",
   company = "",
-  setIsOpenDialog = () => {},
 }) => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const anchorRef = useRef(null);
@@ -26,9 +25,7 @@ const InfoCard = ({
   const handleToggleMenu = () => {
     setIsOpenMenu((prevOpen) => !prevOpen);
   };
-  const handleToggleDialog = () => {
-    setIsOpenDialog((prevOpen) => !prevOpen);
-  };
+
   const handleCloseMenu = (e) => {
     if (anchorRef.current && anchorRef.current.contains(e.target)) {
       return;
@@ -40,15 +37,10 @@ const InfoCard = ({
     {
       title: "この人の情報",
       color: "inherit",
+      to: `/others/${othersId}`,
       onClick: () => {
         handleToggleMenu();
-        handleToggleDialog();
       },
-    },
-    {
-      title: "この人の名刺",
-      color: "inherit",
-      to: `/others/${othersId}/cards`,
     },
     {
       title: "人物を削除",

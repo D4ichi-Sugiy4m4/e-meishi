@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   makeStyles,
   AppBar,
@@ -11,9 +11,8 @@ import {
   Box,
 } from "@material-ui/core";
 import LongMenu from "../molecules/LongMenu";
-import { Cancel, Check, Menu } from "@material-ui/icons";
+import { Menu } from "@material-ui/icons";
 import DrawerMenu from "./DrawerMenu";
-import InfoModal from "components/molecules/InfoModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,51 +20,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const modalActions = [
-  {
-    title: "更新",
-    icon: <Check />,
-    variant: "contained",
-    color: "primary",
-    onClick: () => {},
-  },
-  {
-    title: "キャンセル",
-    icon: <Cancel />,
-    variant: "contained",
-    color: "secondary",
-    onClick: () => {},
-  },
-];
-
-const userData = {
-  // userId: "yUGP79BPN7",
-  // img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  company: "株式会社Breakfast",
-  department: "営業部",
-  rank: "副部長",
-  name: "Hoge Huga",
-  phone: "090-0000-0000",
-  mail: "hoge@huga.com",
-};
-
-const labels = ["会社名", "部署", "役職", "名前", "電話番号", "メールアドレス"];
-
 const Header = () => {
   const classes = useStyles();
   const [MenuOpen, setMenuOpen] = useState(false);
   const anchorRef = useRef(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [items, setItems] = useState({
-    company: "",
-    department: "",
-    rank: "",
-    name: "",
-    phone: "",
-    email: "",
-  });
 
   const handleMenuToggle = () => {
     setMenuOpen((prevOpen) => !prevOpen);
@@ -85,14 +44,10 @@ const Header = () => {
     {
       title: "自分の情報",
       color: "inherit",
+      to: "/account",
       onClick: () => {
         setMenuOpen(false);
-        setIsOpenModal(true);
       },
-    },
-    {
-      title: "自分の名刺",
-      color: "inherit",
     },
     {
       title: "ログアウト",
@@ -101,11 +56,6 @@ const Header = () => {
       onClick: () => {},
     },
   ];
-
-  useEffect(() => {
-    setItems(userData) 
-  // eslint-disable-next-line no-sparse-arrays
-  }, [, isOpenModal])
 
   return (
     <>
@@ -148,17 +98,6 @@ const Header = () => {
         actions={actions}
         anchorEl={anchorRef.current}
         handleClose={handleMenuClose}
-      />
-      <InfoModal
-        title={"あなたの情報"}
-        open={isOpenModal}
-        actions={modalActions}
-        labels={labels}
-        items={items}
-        setItems={setItems}
-        handleOnClose={() => {
-          setIsOpenModal(false);
-        }}
       />
     </>
   );

@@ -1,14 +1,14 @@
 import React from "react"
 import Header from "components/organisms/Header"
-import OthersList from "components/organisms/others/List"
+import Info from "components/organisms/account/Info"
 
-const Home = () => {
+const AccountInfo = () => {
     return (
         <>
             <Header/>
-            <OthersList/>
+            <Info/>
         </>
     )
 }
 
-export default Home
+export default AccountInfo

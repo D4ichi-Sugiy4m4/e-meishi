@@ -1,14 +1,8 @@
-import {
-  Grid,
-  Box,
-  Paper,
-  TextField,
-  Fab,
-} from "@material-ui/core"
+import { Box, Fab, Grid, Paper, TextField } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import BusinessCard from "components/molecules/BusinessCard"
+import BusinessCard from "components/molecules/BusinessCard";
 import CardAddModal from "components/molecules/CardAddModal";
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 
 const itemData = [
   {
@@ -21,26 +15,21 @@ const itemData = [
     img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
     created: "2021-08-02",
   },
-  {
-    othersId: "aAVQsgz2AC",
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-    created: "2020-07-03",
-  },
 ];
 
 const userData = {
-  company: "株式会社TestUser",
-  department: "開発部",
+  company: "株式会社Breakfast",
+  department: "営業部",
   rank: "副部長",
-  name: "Test User",
-  phone: "090-1234-5678",
+  name: "Hoge Huga",
+  phone: "090-0000-0000",
   mail: "hoge@huga.com",
 };
 
 const labels = ["会社名", "部署", "役職", "名前", "電話番号", "メールアドレス"];
 
-const Edit = () => {
-  const [isOpen, setIsOpen] = useState(false)
+const Info = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [image, setImage] = useState("");
 
   const [items, setItems] = useState({
@@ -52,9 +41,9 @@ const Edit = () => {
     email: "",
   });
 
-  useEffect(()=>{
-    setItems(userData)
-  }, [])
+  useEffect(() => {
+    setItems(userData);
+  }, []);
 
   const handleOnChangeImage = async (e) => {
     const { files } = e.target;
@@ -64,7 +53,7 @@ const Edit = () => {
   return (
     <>
       <Box pt={8}>
-        {/* 自分の情報 */}
+        {/* 外部者情報 */}
         <Box p={1}>
           <Paper>
             <Box px={2} py={1}>
@@ -88,7 +77,7 @@ const Edit = () => {
           </Paper>
         </Box>
 
-        {/* 自分の名刺一覧 */}
+        {/* 外部者名刺一覧 */}
         <Box p={1}>
           <Grid container spacing={1}>
             {itemData.map((item) => (
@@ -108,24 +97,24 @@ const Edit = () => {
           right: "30px",
         }}
         onClick={() => {
-          setIsOpen(true)
+          setIsOpen(true);
         }}
       >
         <Add />
       </Fab>
-      
+
       <CardAddModal
-        title={"あなたの名刺を追加"}
+        title={`${items.name}さんの名刺を追加`}
         open={isOpen}
         image={image}
         handleOnChangeImage={handleOnChangeImage}
         handleOnClose={() => {
-            setIsOpen(false)
-            setImage("")
+          setIsOpen(false);
+          setImage("");
         }}
       />
     </>
-  )
-}
+  );
+};
 
-export default Edit
+export default Info;

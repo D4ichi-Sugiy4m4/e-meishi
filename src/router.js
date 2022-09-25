@@ -3,16 +3,9 @@ import {BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { Backdrop } from "@material-ui/core"
 
 const Login = lazy(() => import("components/pages/Login"))
-const Home = lazy(() => import("components/pages/Home"))
-const Account = lazy(() => import("components/pages/Account"))
-const CardList = lazy(() => import("components/pages/CardList"))
-const CardAdd = lazy(() => import("components/pages/CardAdd"))
-const CardDetail = lazy(() => import("components/pages/CardDetail"))
-// const CardEdit = lazy(() => import("components/pages/CardEdit"))
-const MyCardList = lazy(() => import("components/pages/MyCardList"))
-const MyCardAdd = lazy(() => import("components/pages/MyCardAdd"))
-const MyCardDetail = lazy(() => import("components/pages/MyCardDetail"))
-const MyCardEdit = lazy(() => import("components/pages/MyCardEdit"))
+const Others = lazy(() => import("components/pages/Others"))
+const OthersDetail = lazy(() => import("components/pages/OthersInfo"))
+const AccountDetail = lazy(() => import("components/pages/AccountInfo"))
 
 const App = () => {
   return (
@@ -24,20 +17,17 @@ const App = () => {
           }
         >
           <Routes>
+            {/* ログイン */}
             <Route exact path="/" element={<Login/>} />
-            <Route exact path="/account" element={<Account/>} />
-            <Route exact path="/account" element={<Account/>} />
-            <Route exact path="/cards" element={<CardList/>} />
-            <Route exact path="/cards/add" element={<CardAdd/>} />
-            <Route exact path="/cards/:cardId" element={<CardDetail/>} />
-            {/* <Route exact path="/cards/:cardId/edit" element={<CardEdit/>} /> */}
-            <Route exact path="/myCards" element={<MyCardList/>} />
-            <Route exact path="/myCards/add" element={<MyCardAdd/>} />
-            <Route exact path="/myCards/:cardId" element={<MyCardDetail/>} />
-            <Route exact path="/myCards/:cardId/edit" element={<MyCardEdit/>} />
 
-            {/* ホーム画面 */}
-            <Route exact path="/home" element={<Home/>} />
+            {/* 外部者一覧 */}
+            <Route exact path="/others" element={<Others/>} />
+
+            {/* 外部者の情報・名刺一覧 */}
+            <Route exact path="/others/:othersId" element={<OthersDetail/>} />
+
+            {/* 自分の情報・名刺一覧 */}
+            <Route exact path="/account" element={<AccountDetail/>} />
           </Routes>
         </Suspense>
       </Router>

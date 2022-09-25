@@ -21,23 +21,6 @@ const addActions = [
   }
 ];
 
-const editActions = [
-  {
-    title: "更新",
-    icon: <Check />,
-    variant: "contained",
-    color: "primary",
-    onClick: () => {}
-  },
-  {
-    title: "キャンセル",
-    icon: <Cancel />,
-    variant: "contained",
-    color: "secondary",
-    onClick: () => {}
-  }
-];
-
 const labels = [
   "会社名",
   "部署",
@@ -49,7 +32,6 @@ const labels = [
 
 const List = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
-  const [isOpenEdit, setIsOpenEdit] = useState(false);
 
   const [items, setItems] = useState({
     company: "",
@@ -81,7 +63,6 @@ const List = () => {
                   img={item.img}
                   name={item.name}
                   company={item.company}
-                  setIsOpenDialog={setIsOpenEdit}
                 />
               </Grid>
             ))}
@@ -110,25 +91,6 @@ const List = () => {
         setItems={setItems}
         handleOnClose={() => {
           setIsOpenAdd(false);
-          setItems({
-            company: "",
-            department: "",
-            rank: "",
-            name: "",
-            phone: "",
-            email: "",
-          });
-        }}
-      />
-      <InfoModal
-        title={"外部者を編集する"}
-        open={isOpenEdit}
-        actions={editActions}
-        labels={labels}
-        items={items}
-        setItems={setItems}
-        handleOnClose={() => {
-          setIsOpenEdit(false);
           setItems({
             company: "",
             department: "",
