@@ -5,12 +5,12 @@ import { ArrowBackIos } from "@material-ui/icons"
 
 const listItems = [
   {
-    name: "あなたの名刺",
-    to: "/myCards",
+    name: "あなたの情報",
+    to: "/account",
   },
   {
-    name: "他人の名刺",
-    to: "/cards",
+    name: "外部者の情報",
+    to: "/others",
   },
 ]
 
@@ -24,7 +24,6 @@ const DrawerMenu = ({
         open={open}
         onClose={onClose}
         variant="temporary"
-        fullWidth
         ModalProps={{
           keepMounted: true,
         }}
