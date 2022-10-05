@@ -4,62 +4,29 @@ import {
   Paper,
   TextField,
   Fab,
+  Backdrop,
 } from "@material-ui/core"
 import { Add } from "@material-ui/icons";
 import BusinessCard from "components/molecules/BusinessCard"
 import CardAddModal from "components/molecules/CardAddModal";
-import React, { useEffect, useState } from "react"
-
-const itemData = [
-  {
-    othersId: "m8HmMRHRXi",
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    created: "2022-09-01",
-  },
-  {
-    othersId: "DHp8dfcDi5",
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-    created: "2021-08-02",
-  },
-  {
-    othersId: "aAVQsgz2AC",
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-    created: "2020-07-03",
-  },
-];
-
-const userData = {
-  company: "株式会社TestUser",
-  department: "開発部",
-  rank: "副部長",
-  name: "Test User",
-  phone: "090-1234-5678",
-  mail: "hoge@huga.com",
-};
+import React, { useEffect } from "react"
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import { useAccountApi, useAccountState } from "store/account/Account";
+import { CardAddModalState } from "store/CardAddModal";
+import { useCardList } from "store/CardList";
 
 const labels = ["会社名", "部署", "役職", "名前", "電話番号", "メールアドレス"];
 
-const Edit = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [image, setImage] = useState("");
-
-  const [items, setItems] = useState({
-    company: "",
-    department: "",
-    rank: "",
-    name: "",
-    phone: "",
-    email: "",
-  });
+const Info = () => {
+  const accountInfo = useRecoilValueLoadable(useAccountApi)
+  const [items, setItems] = useRecoilState(useAccountState);
+  const cardList = useRecoilValueLoadable(useCardList);
+  const [modal, setModal] = useRecoilState(CardAddModalState);
 
   useEffect(()=>{
-    setItems(userData)
+    setItems(accountInfo.getValue().data)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const handleOnChangeImage = async (e) => {
-    const { files } = e.target;
-    setImage(window.URL.createObjectURL(files[0]));
-  };
 
   return (
     <>
@@ -75,10 +42,10 @@ const Edit = () => {
                       label={labels[index]}
                       value={Object.values(items)[index]}
                       onChange={(e) => {
-                        setItems((prevState) => ({
-                          ...prevState,
+                        setItems({
+                          ...items,
                           [item]: e.target.value,
-                        }));
+                        });
                       }}
                     />
                   </Grid>
@@ -91,9 +58,9 @@ const Edit = () => {
         {/* 自分の名刺一覧 */}
         <Box p={1}>
           <Grid container spacing={1}>
-            {itemData.map((item) => (
+            {cardList.getValue().data.map((card) => (
               <Grid item xs={12}>
-                <BusinessCard item={item} />
+                <BusinessCard item={card} />
               </Grid>
             ))}
           </Grid>
@@ -108,7 +75,7 @@ const Edit = () => {
           right: "30px",
         }}
         onClick={() => {
-          setIsOpen(true)
+          setModal({ ...modal, isOpen: true });
         }}
       >
         <Add />
@@ -116,16 +83,13 @@ const Edit = () => {
       
       <CardAddModal
         title={"あなたの名刺を追加"}
-        open={isOpen}
-        image={image}
-        handleOnChangeImage={handleOnChangeImage}
-        handleOnClose={() => {
-            setIsOpen(false)
-            setImage("")
-        }}
+        open={modal.isOpen}
+      />
+      <Backdrop
+        open={accountInfo.state === "loading" || cardList.state === "loading"}
       />
     </>
   )
 }
 
-export default Edit
+export default Info
