@@ -1,28 +1,65 @@
-import { Backdrop, Box, Fab, Grid, Paper, TextField } from "@material-ui/core";
-import { Add } from "@material-ui/icons";
+import {
+  Backdrop,
+  Box,
+  Button,
+  Fab,
+  Grid,
+  Paper,
+  TextField,
+} from "@material-ui/core";
+import { Add, Check } from "@material-ui/icons";
 import BusinessCard from "components/molecules/BusinessCard";
 import CardAddModal from "components/molecules/CardAddModal";
 import React, { useEffect } from "react";
-import {
-  useRecoilState,
-  useRecoilValueLoadable,
-} from "recoil";
+import { useForm } from "react-hook-form";
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
 import { CardAddModalState } from "store/CardAddModal";
 import { useCardList } from "store/CardList";
 import { useOthersApi, useOthersState } from "store/others/Others";
 
-const labels = ["会社名", "部署", "役職", "名前", "電話番号", "メールアドレス"];
-
 const Info = () => {
-  const othersInfo = useRecoilValueLoadable(useOthersApi)
+  const othersInfo = useRecoilValueLoadable(useOthersApi);
   const [items, setItems] = useRecoilState(useOthersState);
   const cardList = useRecoilValueLoadable(useCardList);
   const [modal, setModal] = useRecoilState(CardAddModalState);
 
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: {
+      company: "",
+      department: "",
+      mail: "",
+      name: "",
+      phone: "",
+      rank: "",
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    setItems((prevState) => ({
+      ...prevState,
+      ...{
+        company: data.company,
+        department: data.department,
+        mail: data.mail,
+        name: data.name,
+        phone: data.phone,
+        rank: data.rank,
+      },
+    }));
+  });
+
   useEffect(() => {
-    setItems(othersInfo.getValue().data)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (othersInfo.state === "hasValue") {
+      setItems(othersInfo.getValue().data);
+      setValue("company", othersInfo.getValue().data.company)
+      setValue("department", othersInfo.getValue().data.department)
+      setValue("rank", othersInfo.getValue().data.rank)
+      setValue("name", othersInfo.getValue().data.name)
+      setValue("phone", othersInfo.getValue().data.phone)
+      setValue("mail", othersInfo.getValue().data.mail)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [othersInfo]);
 
   return (
     <>
@@ -32,21 +69,53 @@ const Info = () => {
           <Paper>
             <Box px={2} py={1}>
               <Grid container spacing={1}>
-                {Object.keys(items).map((item, index) => (
-                  <Grid item xs={12}>
-                    <TextField
-                      label={labels[index]}
-                      value={Object.values(items)[index]}
-                      onChange={(e) => {
-                        setItems({
-                          ...items,
-                          [item]: e.target.value,
-                        });
-                      }}
-                    />
-                  </Grid>
-                ))}
+                <Grid item xs={12}>
+                  <TextField
+                    label={"会社名"}
+                    {...register("company")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"部署"}
+                    {...register("department")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"役職"}
+                    {...register("rank")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"名前"}
+                    {...register("name")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"電話番号"}
+                    {...register("phone")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"メールアドレス"}
+                    {...register("mail")}
+                  />
+                </Grid>
               </Grid>
+            </Box>
+            <Box px={2} py={1}>
+              <Button
+                startIcon={<Check />}
+                variant={"contained"}
+                color={"primary"}
+                onClick={onSubmit}
+              >
+                更新
+              </Button>
             </Box>
           </Paper>
         </Box>
@@ -54,9 +123,9 @@ const Info = () => {
         {/* 外部者名刺一覧 */}
         <Box p={1}>
           <Grid container spacing={1}>
-            {cardList.getValue().data.map((card) => (
-              <Grid item xs={12}>
-                <BusinessCard item={card} />
+            {cardList.getValue().data.map((card, index) => (
+              <Grid key={`${index}_grid`} item xs={12}>
+                <BusinessCard key={`${index}_card`} item={card} />
               </Grid>
             ))}
           </Grid>
@@ -72,6 +141,14 @@ const Info = () => {
         }}
         onClick={() => {
           setModal({ ...modal, isOpen: true });
+          setItems({
+            company: "",
+            department: "",
+            mail: "",
+            name: "",
+            phone: "",
+            rank: "",
+          });
         }}
       >
         <Add />

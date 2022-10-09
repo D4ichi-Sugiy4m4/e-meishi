@@ -8,30 +8,41 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Cancel, Check } from "@material-ui/icons";
-import { useRecoilState } from "recoil";
-import { OthersAddModalState } from "store/others/OthersAddModal";
+import { useOthersState } from "store/others/Others";
+import { useForm } from "react-hook-form";
+import { useSetRecoilState } from "recoil";
 
-const labels = ["会社名", "部署", "役職", "名前", "電話番号", "メールアドレス"];
+const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
+  const setOthersInfo = useSetRecoilState(useOthersState);
 
-const InfoModal = ({ title = "", open = false, state = {} }) => {
-  const [modal, setModal] = useRecoilState(OthersAddModalState);
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      company: "",
+      department: "",
+      rank: "",
+      name: "",
+      phone: "",
+      mail: "",
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    setOthersInfo((prevState) => ({
+      ...prevState,
+      company: data.company,
+      department: data.department,
+      rank: data.rank,
+      name: data.name,
+      phone: data.phone,
+      mail: data.mail,
+    }));
+  });
 
   return (
     <Dialog
       open={open}
       onClose={() => {
-        setModal({
-          isOpen: false,
-          inputItems: {
-            company: "",
-            department: "",
-            email: "",
-            name: "",
-            phone: "",
-            rank: "",
-          },
-          inputImage: "",
-        });
+        setModal({ isOpen: false });
       }}
     >
       <Box p={2}>
@@ -39,23 +50,42 @@ const InfoModal = ({ title = "", open = false, state = {} }) => {
       </Box>
       <Box p={2}>
         <Grid container spacing={2}>
-          {Object.keys(modal.inputItems).map((item, index) => (
-            <Grid item>
-              <TextField
-                value={Object.values(modal.inputItems)[index]}
-                label={labels[index]}
-                onChange={(e) => {
-                  setModal({
-                    ...modal,
-                    inputItems: {
-                      ...modal.inputItems,
-                      [item]: e.target.value,
-                    },
-                  });
-                }}
-              />
-            </Grid>
-          ))}
+          <Grid item>
+            <TextField
+              label={"会社名"}
+              {...register("company")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"部署"}
+              {...register("department")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"役職"}
+              {...register("rank")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"名前"}
+              {...register("name")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"電話番号"}
+              {...register("phone")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"メールアドレス"}
+              {...register("mail")}
+            />
+          </Grid>
         </Grid>
       </Box>
       <Box p={2}>
@@ -66,17 +96,9 @@ const InfoModal = ({ title = "", open = false, state = {} }) => {
               variant={"contained"}
               color={"primary"}
               onClick={() => {
+                onSubmit();
                 setModal({
-                  ...modal,
                   isOpen: false,
-                  inputItems: {
-                    company: "",
-                    department: "",
-                    email: "",
-                    name: "",
-                    phone: "",
-                    rank: "",
-                  }
                 });
               }}
             >
@@ -90,16 +112,15 @@ const InfoModal = ({ title = "", open = false, state = {} }) => {
               color={"secondary"}
               onClick={() => {
                 setModal({
-                  ...modal,
                   isOpen: false,
-                  inputItems: {
-                    company: "",
-                    department: "",
-                    email: "",
-                    name: "",
-                    phone: "",
-                    rank: "",
-                  }
+                });
+                setOthersInfo({
+                  company: "",
+                  department: "",
+                  mail: "",
+                  name: "",
+                  phone: "",
+                  rank: "",
                 });
               }}
             >

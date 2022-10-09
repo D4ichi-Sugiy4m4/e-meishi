@@ -5,28 +5,61 @@ import {
   TextField,
   Fab,
   Backdrop,
-} from "@material-ui/core"
-import { Add } from "@material-ui/icons";
-import BusinessCard from "components/molecules/BusinessCard"
+  Button,
+} from "@material-ui/core";
+import { Add, Check } from "@material-ui/icons";
+import BusinessCard from "components/molecules/BusinessCard";
 import CardAddModal from "components/molecules/CardAddModal";
-import React, { useEffect } from "react"
-import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useRecoilState, useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import { useAccountApi, useAccountState } from "store/account/Account";
 import { CardAddModalState } from "store/CardAddModal";
 import { useCardList } from "store/CardList";
 
-const labels = ["会社名", "部署", "役職", "名前", "電話番号", "メールアドレス"];
-
 const Info = () => {
-  const accountInfo = useRecoilValueLoadable(useAccountApi)
-  const [items, setItems] = useRecoilState(useAccountState);
+  const accountInfo = useRecoilValueLoadable(useAccountApi);
+  const setItems = useSetRecoilState(useAccountState);
   const cardList = useRecoilValueLoadable(useCardList);
   const [modal, setModal] = useRecoilState(CardAddModalState);
 
-  useEffect(()=>{
-    setItems(accountInfo.getValue().data)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: {
+      company: "",
+      department: "",
+      mail: "",
+      name: "",
+      phone: "",
+      rank: "",
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    setItems((prevState) => ({
+      ...prevState,
+      ...{
+        company: data.company,
+        department: data.department,
+        mail: data.mail,
+        name: data.name,
+        phone: data.phone,
+        rank: data.rank,
+      },
+    }));
+  });
+
+  useEffect(() => {
+    if (accountInfo.state === "hasValue") {
+      setItems(accountInfo.getValue().data);
+      setValue("company", accountInfo.getValue().data.company)
+      setValue("department", accountInfo.getValue().data.department)
+      setValue("rank", accountInfo.getValue().data.rank)
+      setValue("name", accountInfo.getValue().data.name)
+      setValue("phone", accountInfo.getValue().data.phone)
+      setValue("mail", accountInfo.getValue().data.mail)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountInfo]);
 
   return (
     <>
@@ -36,21 +69,53 @@ const Info = () => {
           <Paper>
             <Box px={2} py={1}>
               <Grid container spacing={1}>
-                {Object.keys(items).map((item, index) => (
                   <Grid item xs={12}>
                     <TextField
-                      label={labels[index]}
-                      value={Object.values(items)[index]}
-                      onChange={(e) => {
-                        setItems({
-                          ...items,
-                          [item]: e.target.value,
-                        });
-                      }}
+                      label={"会社名"}
+                      {...register("company")}
                     />
                   </Grid>
-                ))}
+                  <Grid item xs={12}>
+                    <TextField
+                      label={"部署"}
+                      {...register("department")}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label={"役職"}
+                      {...register("rank")}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label={"名前"}
+                      {...register("name")}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label={"電話番号"}
+                      {...register("phone")}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label={"メールアドレス"}
+                      {...register("mail")}
+                    />
+                  </Grid>
               </Grid>
+            </Box>
+            <Box px={2} py={1}>
+              <Button
+                startIcon={<Check />}
+                variant={"contained"}
+                color={"primary"}
+                onClick={onSubmit}
+              >
+                更新
+              </Button>
             </Box>
           </Paper>
         </Box>
@@ -58,9 +123,9 @@ const Info = () => {
         {/* 自分の名刺一覧 */}
         <Box p={1}>
           <Grid container spacing={1}>
-            {cardList.getValue().data.map((card) => (
-              <Grid item xs={12}>
-                <BusinessCard item={card} />
+            {cardList.getValue().data.map((card, index) => (
+              <Grid key={`${index}_grid`} item xs={12}>
+                <BusinessCard key={`${index}_card`} item={card} />
               </Grid>
             ))}
           </Grid>
@@ -80,16 +145,13 @@ const Info = () => {
       >
         <Add />
       </Fab>
-      
-      <CardAddModal
-        title={"あなたの名刺を追加"}
-        open={modal.isOpen}
-      />
+
+      <CardAddModal title={"あなたの名刺を追加"} open={modal.isOpen} />
       <Backdrop
         open={accountInfo.state === "loading" || cardList.state === "loading"}
       />
     </>
-  )
-}
+  );
+};
 
-export default Info
+export default Info;

@@ -40,15 +40,16 @@ const DrawerMenu = ({
         <Divider />
         <List>
           {listItems.map((item) => (
-            <ListItem style={{padding: 0}}>
+            <ListItem key={`${item.name}_item`} style={{padding: 0}}>
               <Button
+              key={`${item.name}_button`}
                 variant="text"
                 component={Link}
                 to={item.to}
                 fullWidth
               >
-                <Box px={3} py={2}>
-                  <Typography variant="body1">
+                <Box key={`${item.name}_box`} px={3} py={2}>
+                  <Typography key={`${item.name}_text`} variant="body1">
                     {item.name}
                   </Typography>
                 </Box>

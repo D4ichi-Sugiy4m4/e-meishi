@@ -36,8 +36,9 @@ const List = () => {
             spacing={3}
           >
             {itemData.getValue().data.map((item) => (
-              <Grid item>
+              <Grid key={`${item.othersId}_grid`} item>
                 <OthersInfoCard
+                  key={`${item.othersId}_card`}
                   othersId={item.othersId}
                   img={item.img}
                   name={item.name}
@@ -57,14 +58,17 @@ const List = () => {
         }}
         onClick={() => {
           setModal({
-            ...modal,
             isOpen: true,
           });
         }}
       >
         <Add />
       </Fab>
-      <InfoModal title={"外部者を追加する"} open={modal.isOpen} />
+      <InfoModal
+        title={"外部者を追加する"}
+        open={modal.isOpen}
+        setModal={setModal}
+      />
       <Backdrop
         open={itemData.state === "loading"}
       />
