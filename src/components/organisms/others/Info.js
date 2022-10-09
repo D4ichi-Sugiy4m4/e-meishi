@@ -1,54 +1,65 @@
-import { Box, Fab, Grid, Paper, TextField } from "@material-ui/core";
-import { Add } from "@material-ui/icons";
+import {
+  Backdrop,
+  Box,
+  Button,
+  Fab,
+  Grid,
+  Paper,
+  TextField,
+} from "@material-ui/core";
+import { Add, Check } from "@material-ui/icons";
 import BusinessCard from "components/molecules/BusinessCard";
 import CardAddModal from "components/molecules/CardAddModal";
-import React, { useEffect, useState } from "react";
-
-const itemData = [
-  {
-    othersId: "m8HmMRHRXi",
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    created: "2022-09-01",
-  },
-  {
-    othersId: "DHp8dfcDi5",
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-    created: "2021-08-02",
-  },
-];
-
-const userData = {
-  company: "株式会社Breakfast",
-  department: "営業部",
-  rank: "副部長",
-  name: "Hoge Huga",
-  phone: "090-0000-0000",
-  mail: "hoge@huga.com",
-};
-
-const labels = ["会社名", "部署", "役職", "名前", "電話番号", "メールアドレス"];
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import { CardAddModalState } from "store/CardAddModal";
+import { useCardList } from "store/CardList";
+import { useOthersApi, useOthersState } from "store/others/Others";
 
 const Info = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [image, setImage] = useState("");
+  const othersInfo = useRecoilValueLoadable(useOthersApi);
+  const [items, setItems] = useRecoilState(useOthersState);
+  const cardList = useRecoilValueLoadable(useCardList);
+  const [modal, setModal] = useRecoilState(CardAddModalState);
 
-  const [items, setItems] = useState({
-    company: "",
-    department: "",
-    rank: "",
-    name: "",
-    phone: "",
-    email: "",
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: {
+      company: "",
+      department: "",
+      mail: "",
+      name: "",
+      phone: "",
+      rank: "",
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    setItems((prevState) => ({
+      ...prevState,
+      ...{
+        company: data.company,
+        department: data.department,
+        mail: data.mail,
+        name: data.name,
+        phone: data.phone,
+        rank: data.rank,
+      },
+    }));
   });
 
   useEffect(() => {
-    setItems(userData);
-  }, []);
-
-  const handleOnChangeImage = async (e) => {
-    const { files } = e.target;
-    setImage(window.URL.createObjectURL(files[0]));
-  };
+    if (othersInfo.state === "hasValue") {
+      setItems(othersInfo.getValue().data);
+      setValue("company", othersInfo.getValue().data.company)
+      setValue("department", othersInfo.getValue().data.department)
+      setValue("rank", othersInfo.getValue().data.rank)
+      setValue("name", othersInfo.getValue().data.name)
+      setValue("phone", othersInfo.getValue().data.phone)
+      setValue("mail", othersInfo.getValue().data.mail)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [othersInfo]);
 
   return (
     <>
@@ -58,21 +69,53 @@ const Info = () => {
           <Paper>
             <Box px={2} py={1}>
               <Grid container spacing={1}>
-                {Object.keys(items).map((item, index) => (
-                  <Grid item xs={12}>
-                    <TextField
-                      label={labels[index]}
-                      value={Object.values(items)[index]}
-                      onChange={(e) => {
-                        setItems((prevState) => ({
-                          ...prevState,
-                          [item]: e.target.value,
-                        }));
-                      }}
-                    />
-                  </Grid>
-                ))}
+                <Grid item xs={12}>
+                  <TextField
+                    label={"会社名"}
+                    {...register("company")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"部署"}
+                    {...register("department")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"役職"}
+                    {...register("rank")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"名前"}
+                    {...register("name")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"電話番号"}
+                    {...register("phone")}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label={"メールアドレス"}
+                    {...register("mail")}
+                  />
+                </Grid>
               </Grid>
+            </Box>
+            <Box px={2} py={1}>
+              <Button
+                startIcon={<Check />}
+                variant={"contained"}
+                color={"primary"}
+                onClick={onSubmit}
+              >
+                更新
+              </Button>
             </Box>
           </Paper>
         </Box>
@@ -80,9 +123,9 @@ const Info = () => {
         {/* 外部者名刺一覧 */}
         <Box p={1}>
           <Grid container spacing={1}>
-            {itemData.map((item) => (
-              <Grid item xs={12}>
-                <BusinessCard item={item} />
+            {cardList.getValue().data.map((card, index) => (
+              <Grid key={`${index}_grid`} item xs={12}>
+                <BusinessCard key={`${index}_card`} item={card} />
               </Grid>
             ))}
           </Grid>
@@ -97,7 +140,15 @@ const Info = () => {
           right: "30px",
         }}
         onClick={() => {
-          setIsOpen(true);
+          setModal({ ...modal, isOpen: true });
+          setItems({
+            company: "",
+            department: "",
+            mail: "",
+            name: "",
+            phone: "",
+            rank: "",
+          });
         }}
       >
         <Add />
@@ -105,13 +156,10 @@ const Info = () => {
 
       <CardAddModal
         title={`${items.name}さんの名刺を追加`}
-        open={isOpen}
-        image={image}
-        handleOnChangeImage={handleOnChangeImage}
-        handleOnClose={() => {
-          setIsOpen(false);
-          setImage("");
-        }}
+        open={modal.isOpen}
+      />
+      <Backdrop
+        open={othersInfo.state === "loading" || cardList.state === "loading"}
       />
     </>
   );

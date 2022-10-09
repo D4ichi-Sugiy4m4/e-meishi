@@ -1,61 +1,132 @@
 import React from "react";
-import { Box, Button, Grid, Dialog, TextField, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Grid,
+  Dialog,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import { Cancel, Check } from "@material-ui/icons";
+import { useOthersState } from "store/others/Others";
+import { useForm } from "react-hook-form";
+import { useSetRecoilState } from "recoil";
 
-const InfoModal = ({
-  title = "",
-  open = false,
-  actions = [],
-  labels = [],
-  items = {},
-  setItems = () => {},
-  handleOnClose = () => {},
-  handleOnSubmit = () => {},
-}) => {
+const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
+  const setOthersInfo = useSetRecoilState(useOthersState);
+
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      company: "",
+      department: "",
+      rank: "",
+      name: "",
+      phone: "",
+      mail: "",
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    setOthersInfo((prevState) => ({
+      ...prevState,
+      company: data.company,
+      department: data.department,
+      rank: data.rank,
+      name: data.name,
+      phone: data.phone,
+      mail: data.mail,
+    }));
+  });
+
   return (
     <Dialog
       open={open}
-      onClose={handleOnClose}
+      onClose={() => {
+        setModal({ isOpen: false });
+      }}
     >
       <Box p={2}>
-        <Typography>
-          {title}
-        </Typography>
+        <Typography>{title}</Typography>
       </Box>
       <Box p={2}>
         <Grid container spacing={2}>
-          {Object.keys(items).map((item, index) => (
-            <Grid item>
-              <TextField
-                value={Object.values(items)[index]}
-                label={labels[index]}
-                onChange={(e) => {
-                  setItems((prevState) => ({
-                    ...prevState,
-                    [item]: e.target.value
-                  }))
-                }}
-              />
-            </Grid>
-          ))}
+          <Grid item>
+            <TextField
+              label={"会社名"}
+              {...register("company")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"部署"}
+              {...register("department")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"役職"}
+              {...register("rank")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"名前"}
+              {...register("name")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"電話番号"}
+              {...register("phone")}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              label={"メールアドレス"}
+              {...register("mail")}
+            />
+          </Grid>
         </Grid>
       </Box>
       <Box p={2}>
         <Grid container spacing={2}>
-          {actions.map((action) => (
-            <Grid item>
-              <Button
-                startIcon={action.icon}
-                variant={action.variant}
-                color={action.color}
-                onClick={() => {
-                  handleOnSubmit()
-                  handleOnClose()
-                }}
-              >
-                {action.title}
-              </Button>
-            </Grid>
-          ))}
+          <Grid item>
+            <Button
+              startIcon={<Check />}
+              variant={"contained"}
+              color={"primary"}
+              onClick={() => {
+                onSubmit();
+                setModal({
+                  isOpen: false,
+                });
+              }}
+            >
+              {"追加"}
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              startIcon={<Cancel />}
+              variant={"contained"}
+              color={"secondary"}
+              onClick={() => {
+                setModal({
+                  isOpen: false,
+                });
+                setOthersInfo({
+                  company: "",
+                  department: "",
+                  mail: "",
+                  name: "",
+                  phone: "",
+                  rank: "",
+                });
+              }}
+            >
+              {"キャンセル"}
+            </Button>
+          </Grid>
         </Grid>
       </Box>
     </Dialog>

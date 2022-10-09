@@ -10,6 +10,8 @@ import {
 import { Cancel, Check } from "@material-ui/icons";
 import AddImageButton from "components/atoms/AddImageButton";
 import React from "react";
+import { useRecoilState } from "recoil";
+import { CardAddModalState } from "store/CardAddModal";
 
 const useStyles = makeStyles({
   media: {
@@ -22,17 +24,26 @@ const useStyles = makeStyles({
 const CardAddModal = ({
   title = "",
   open = false,
-  image = "",
-  handleOnClose = () => {},
-  handleOnChangeImage = () => {},
 }) => {
   const classes = useStyles();
 
+  const [modal, setModal] = useRecoilState(CardAddModalState)
+
+  const handleOnChangeImage = async (e) => {
+    const { files } = e.target;
+    setModal({
+      ...modal,
+      image: window.URL.createObjectURL(files[0])
+    });
+  };
+
   return (
-    <Dialog open={open} onClose={handleOnClose}>
+    <Dialog open={open} onClose={() => {
+      
+    }}>
       <Box p={2}>
         <Typography>{title}</Typography>
-        {image === "" ? (
+        {modal.image === "" ? (
           <AddImageButton
             onChange={(e) => {
               handleOnChangeImage(e);
@@ -52,7 +63,7 @@ const CardAddModal = ({
                 }}
               />
             </Button>
-            <CardMedia image={image} className={classes.media} />
+            <CardMedia image={modal.image} className={classes.media} />
           </>
         )}
       </Box>
@@ -63,10 +74,13 @@ const CardAddModal = ({
               startIcon={<Check />}
               variant={"contained"}
               color={"primary"}
-              disabled={image === ""}
+              disabled={modal.image === ""}
               onClick={() => {
-                //   handleOnSubmit()
-                handleOnClose();
+                setModal({
+                  ...modal,
+                  isOpen: false,
+                  image: "",
+                })
               }}
             >
               追加
@@ -78,7 +92,11 @@ const CardAddModal = ({
               variant={"contained"}
               color={"secondary"}
               onClick={() => {
-                handleOnClose();
+                setModal({
+                  ...modal,
+                  isOpen: false,
+                  image: "",
+                })
               }}
             >
               キャンセル

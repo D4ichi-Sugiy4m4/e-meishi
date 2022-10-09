@@ -1,4 +1,5 @@
 import React from "react"
+import { RecoilRoot } from "recoil";
 import CardList from "./components/pages/CardList";
 import { Auth } from "./store/auth"
 
@@ -6,7 +7,9 @@ const App = () => {
   return(
     <>
       <Auth>
-        <CardList />
+        <RecoilRoot>
+          <CardList />
+        </RecoilRoot>
       </Auth>
     </>
   )
