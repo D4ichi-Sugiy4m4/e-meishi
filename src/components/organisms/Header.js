@@ -64,7 +64,7 @@ const Header = () => {
           <IconButton color="inherit" edge="start" onClick={handleDrawerToggle}>
             <Menu />
           </IconButton>
-          <Grid container justify="space-between">
+          <Grid container justifyContent="space-between">
             <Grid item>
               <Typography variant="h6">e名刺</Typography>
             </Grid>
