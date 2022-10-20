@@ -15,7 +15,7 @@ import { useSetRecoilState } from "recoil";
 const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
   const setOthersInfo = useSetRecoilState(useOthersState);
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
       company: "",
       department: "",
@@ -38,6 +38,15 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
     }));
   });
 
+  const clearFormData = () => {
+    setValue("company", "");
+    setValue("department", "");
+    setValue("rank", "");
+    setValue("name", "");
+    setValue("phone", "");
+    setValue("mail", "");
+  };
+
   return (
     <Dialog
       open={open}
@@ -51,40 +60,22 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
       <Box p={2}>
         <Grid container spacing={2}>
           <Grid item>
-            <TextField
-              label={"会社名"}
-              {...register("company")}
-            />
+            <TextField label={"会社名"} {...register("company")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"部署"}
-              {...register("department")}
-            />
+            <TextField label={"部署"} {...register("department")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"役職"}
-              {...register("rank")}
-            />
+            <TextField label={"役職"} {...register("rank")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"名前"}
-              {...register("name")}
-            />
+            <TextField label={"名前"} {...register("name")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"電話番号"}
-              {...register("phone")}
-            />
+            <TextField label={"電話番号"} {...register("phone")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"メールアドレス"}
-              {...register("mail")}
-            />
+            <TextField label={"メールアドレス"} {...register("mail")} />
           </Grid>
         </Grid>
       </Box>
@@ -100,6 +91,7 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
                 setModal({
                   isOpen: false,
                 });
+                clearFormData();
               }}
             >
               {"追加"}
@@ -114,14 +106,7 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
                 setModal({
                   isOpen: false,
                 });
-                setOthersInfo({
-                  company: "",
-                  department: "",
-                  mail: "",
-                  name: "",
-                  phone: "",
-                  rank: "",
-                });
+                clearFormData();
               }}
             >
               {"キャンセル"}

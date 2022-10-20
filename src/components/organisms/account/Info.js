@@ -12,7 +12,11 @@ import BusinessCard from "components/molecules/BusinessCard";
 import CardAddModal from "components/molecules/CardAddModal";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useRecoilState, useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import {
+  useRecoilState,
+  useRecoilValueLoadable,
+  useSetRecoilState,
+} from "recoil";
 import { useAccountApi, useAccountState } from "store/account/Account";
 import { CardAddModalState } from "store/CardAddModal";
 import { useCardList } from "store/CardList";
@@ -51,12 +55,12 @@ const Info = () => {
   useEffect(() => {
     if (accountInfo.state === "hasValue") {
       setItems(accountInfo.getValue().data);
-      setValue("company", accountInfo.getValue().data.company)
-      setValue("department", accountInfo.getValue().data.department)
-      setValue("rank", accountInfo.getValue().data.rank)
-      setValue("name", accountInfo.getValue().data.name)
-      setValue("phone", accountInfo.getValue().data.phone)
-      setValue("mail", accountInfo.getValue().data.mail)
+      setValue("company", accountInfo.getValue().data.company);
+      setValue("department", accountInfo.getValue().data.department);
+      setValue("rank", accountInfo.getValue().data.rank);
+      setValue("name", accountInfo.getValue().data.name);
+      setValue("phone", accountInfo.getValue().data.phone);
+      setValue("mail", accountInfo.getValue().data.mail);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountInfo]);
@@ -69,42 +73,24 @@ const Info = () => {
           <Paper>
             <Box px={2} py={1}>
               <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <TextField
-                      label={"会社名"}
-                      {...register("company")}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      label={"部署"}
-                      {...register("department")}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      label={"役職"}
-                      {...register("rank")}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      label={"名前"}
-                      {...register("name")}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      label={"電話番号"}
-                      {...register("phone")}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      label={"メールアドレス"}
-                      {...register("mail")}
-                    />
-                  </Grid>
+                <Grid item xs={12}>
+                  <TextField label={"会社名"} {...register("company")} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label={"部署"} {...register("department")} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label={"役職"} {...register("rank")} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label={"名前"} {...register("name")} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label={"電話番号"} {...register("phone")} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label={"メールアドレス"} {...register("mail")} />
+                </Grid>
               </Grid>
             </Box>
             <Box px={2} py={1}>
