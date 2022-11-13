@@ -8,56 +8,54 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Add, Check } from "@material-ui/icons";
+import getInfo from "api/others/:othersId/get";
+import getCards from "api/get";
 import BusinessCard from "components/molecules/BusinessCard";
 import CardAddModal from "components/molecules/CardAddModal";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRecoilState, useRecoilValueLoadable } from "recoil";
-import { CardAddModalState } from "store/CardAddModal";
-import { useCardList } from "store/CardList";
-import { useOthersApi, useOthersState } from "store/others/Others";
 
 const Info = () => {
-  const othersInfo = useRecoilValueLoadable(useOthersApi);
-  const [items, setItems] = useRecoilState(useOthersState);
-  const cardList = useRecoilValueLoadable(useCardList);
-  const [modal, setModal] = useRecoilState(CardAddModalState);
+  const [othersInfo, setOthersInfo] = useState({});
+  const [cardList, setCardList] = useState([]);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const getOthersInfo = async () => {
+    const res = await getInfo();
+    setOthersInfo(res.data);
+  };
+  const getCardList = async () => {
+    const res = await getCards();
+    setCardList(res.data);
+  };
+
+  useEffect(() => {
+    getOthersInfo();
+    getCardList();
+  }, []);
 
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
-      company: "",
-      department: "",
-      mail: "",
-      name: "",
-      phone: "",
-      rank: "",
+      company: othersInfo.company,
+      department: othersInfo.department,
+      mail: othersInfo.rank,
+      name: othersInfo.name,
+      phone: othersInfo.phone,
+      rank: othersInfo.mail,
     },
   });
 
   const onSubmit = handleSubmit((data) => {
-    setItems((prevState) => ({
-      ...prevState,
-      ...{
-        company: data.company,
-        department: data.department,
-        mail: data.mail,
-        name: data.name,
-        phone: data.phone,
-        rank: data.rank,
-      },
-    }));
+    // TODO implement POST proccess
   });
 
   useEffect(() => {
-    if (othersInfo.state === "hasValue") {
-      setItems(othersInfo.getValue().data);
-      setValue("company", othersInfo.getValue().data.company)
-      setValue("department", othersInfo.getValue().data.department)
-      setValue("rank", othersInfo.getValue().data.rank)
-      setValue("name", othersInfo.getValue().data.name)
-      setValue("phone", othersInfo.getValue().data.phone)
-      setValue("mail", othersInfo.getValue().data.mail)
-    }
+    setValue("company", othersInfo.company);
+    setValue("department", othersInfo.department);
+    setValue("rank", othersInfo.rank);
+    setValue("name", othersInfo.name);
+    setValue("phone", othersInfo.phone);
+    setValue("mail", othersInfo.mail);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [othersInfo]);
 
@@ -72,36 +70,42 @@ const Info = () => {
                 <Grid item xs={12}>
                   <TextField
                     label={"会社名"}
+                    InputLabelProps={{ shrink: true }}
                     {...register("company")}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
                     label={"部署"}
+                    InputLabelProps={{ shrink: true }}
                     {...register("department")}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
                     label={"役職"}
+                    InputLabelProps={{ shrink: true }}
                     {...register("rank")}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
                     label={"名前"}
+                    InputLabelProps={{ shrink: true }}
                     {...register("name")}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
                     label={"電話番号"}
+                    InputLabelProps={{ shrink: true }}
                     {...register("phone")}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
                     label={"メールアドレス"}
+                    InputLabelProps={{ shrink: true }}
                     {...register("mail")}
                   />
                 </Grid>
@@ -123,7 +127,7 @@ const Info = () => {
         {/* 外部者名刺一覧 */}
         <Box p={1}>
           <Grid container spacing={1}>
-            {cardList.getValue().data.map((card, index) => (
+            {cardList?.map((card, index) => (
               <Grid key={`${index}_grid`} item xs={12}>
                 <BusinessCard key={`${index}_card`} item={card} />
               </Grid>
@@ -140,26 +144,21 @@ const Info = () => {
           right: "30px",
         }}
         onClick={() => {
-          setModal({ ...modal, isOpen: true });
-          setItems({
-            company: "",
-            department: "",
-            mail: "",
-            name: "",
-            phone: "",
-            rank: "",
-          });
+          setIsOpenModal(true);
         }}
       >
         <Add />
       </Fab>
 
       <CardAddModal
-        title={`${items.name}さんの名刺を追加`}
-        open={modal.isOpen}
+        title={`${othersInfo.name}さんの名刺を追加`}
+        open={isOpenModal}
+        setIsOpen={setIsOpenModal}
       />
+
       <Backdrop
-        open={othersInfo.state === "loading" || cardList.state === "loading"}
+        style={{zIndex: 9999}}
+        open={Object.keys(othersInfo).length === 0 || cardList.length === 0}
       />
     </>
   );

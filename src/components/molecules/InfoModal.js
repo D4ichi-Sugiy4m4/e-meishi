@@ -8,14 +8,11 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Cancel, Check } from "@material-ui/icons";
-import { useOthersState } from "store/others/Others";
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
 
-const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
-  const setOthersInfo = useSetRecoilState(useOthersState);
+const InfoModal = ({ title = "", open = false, setIsOpen = () => {} }) => {
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
       company: "",
       department: "",
@@ -27,22 +24,23 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
   });
 
   const onSubmit = handleSubmit((data) => {
-    setOthersInfo((prevState) => ({
-      ...prevState,
-      company: data.company,
-      department: data.department,
-      rank: data.rank,
-      name: data.name,
-      phone: data.phone,
-      mail: data.mail,
-    }));
+    // TODO POST送信処理
   });
+
+  const clearFormData = () => {
+    setValue("company", "");
+    setValue("department", "");
+    setValue("rank", "");
+    setValue("name", "");
+    setValue("phone", "");
+    setValue("mail", "");
+  };
 
   return (
     <Dialog
       open={open}
       onClose={() => {
-        setModal({ isOpen: false });
+        setIsOpen(false);
       }}
     >
       <Box p={2}>
@@ -51,40 +49,22 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
       <Box p={2}>
         <Grid container spacing={2}>
           <Grid item>
-            <TextField
-              label={"会社名"}
-              {...register("company")}
-            />
+            <TextField label={"会社名"} {...register("company")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"部署"}
-              {...register("department")}
-            />
+            <TextField label={"部署"} {...register("department")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"役職"}
-              {...register("rank")}
-            />
+            <TextField label={"役職"} {...register("rank")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"名前"}
-              {...register("name")}
-            />
+            <TextField label={"名前"} {...register("name")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"電話番号"}
-              {...register("phone")}
-            />
+            <TextField label={"電話番号"} {...register("phone")} />
           </Grid>
           <Grid item>
-            <TextField
-              label={"メールアドレス"}
-              {...register("mail")}
-            />
+            <TextField label={"メールアドレス"} {...register("mail")} />
           </Grid>
         </Grid>
       </Box>
@@ -97,9 +77,8 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
               color={"primary"}
               onClick={() => {
                 onSubmit();
-                setModal({
-                  isOpen: false,
-                });
+                setIsOpen(false);
+                clearFormData();
               }}
             >
               {"追加"}
@@ -111,17 +90,8 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
               variant={"contained"}
               color={"secondary"}
               onClick={() => {
-                setModal({
-                  isOpen: false,
-                });
-                setOthersInfo({
-                  company: "",
-                  department: "",
-                  mail: "",
-                  name: "",
-                  phone: "",
-                  rank: "",
-                });
+                setIsOpen(false);
+                clearFormData();
               }}
             >
               {"キャンセル"}

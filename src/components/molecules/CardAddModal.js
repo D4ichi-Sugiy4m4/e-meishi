@@ -9,9 +9,7 @@ import {
 } from "@material-ui/core";
 import { Cancel, Check } from "@material-ui/icons";
 import AddImageButton from "components/atoms/AddImageButton";
-import React from "react";
-import { useRecoilState } from "recoil";
-import { CardAddModalState } from "store/CardAddModal";
+import React, { useState } from "react";
 
 const useStyles = makeStyles({
   media: {
@@ -21,29 +19,21 @@ const useStyles = makeStyles({
   },
 });
 
-const CardAddModal = ({
-  title = "",
-  open = false,
-}) => {
+const CardAddModal = ({ title = "", open = false, setIsOpen = () => {} }) => {
   const classes = useStyles();
 
-  const [modal, setModal] = useRecoilState(CardAddModalState)
+  const [image, setImage] = useState("");
 
   const handleOnChangeImage = async (e) => {
     const { files } = e.target;
-    setModal({
-      ...modal,
-      image: window.URL.createObjectURL(files[0])
-    });
+    setImage(window.URL.createObjectURL(files[0]));
   };
 
   return (
-    <Dialog open={open} onClose={() => {
-      
-    }}>
+    <Dialog open={open} onClose={() => {}}>
       <Box p={2}>
         <Typography>{title}</Typography>
-        {modal.image === "" ? (
+        {image === "" ? (
           <AddImageButton
             onChange={(e) => {
               handleOnChangeImage(e);
@@ -63,7 +53,7 @@ const CardAddModal = ({
                 }}
               />
             </Button>
-            <CardMedia image={modal.image} className={classes.media} />
+            <CardMedia image={image} className={classes.media} />
           </>
         )}
       </Box>
@@ -74,13 +64,10 @@ const CardAddModal = ({
               startIcon={<Check />}
               variant={"contained"}
               color={"primary"}
-              disabled={modal.image === ""}
+              disabled={image === ""}
               onClick={() => {
-                setModal({
-                  ...modal,
-                  isOpen: false,
-                  image: "",
-                })
+                setIsOpen(false);
+                setImage("");
               }}
             >
               追加
@@ -92,11 +79,8 @@ const CardAddModal = ({
               variant={"contained"}
               color={"secondary"}
               onClick={() => {
-                setModal({
-                  ...modal,
-                  isOpen: false,
-                  image: "",
-                })
+                setIsOpen(false);
+                setImage("");
               }}
             >
               キャンセル
