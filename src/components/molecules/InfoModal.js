@@ -8,12 +8,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Cancel, Check } from "@material-ui/icons";
-import { useOthersState } from "store/others/Others";
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
 
-const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
-  const setOthersInfo = useSetRecoilState(useOthersState);
+const InfoModal = ({ title = "", open = false, setIsOpen = () => {} }) => {
 
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
@@ -27,15 +24,7 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
   });
 
   const onSubmit = handleSubmit((data) => {
-    setOthersInfo((prevState) => ({
-      ...prevState,
-      company: data.company,
-      department: data.department,
-      rank: data.rank,
-      name: data.name,
-      phone: data.phone,
-      mail: data.mail,
-    }));
+    // TODO POST送信処理
   });
 
   const clearFormData = () => {
@@ -51,7 +40,7 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
     <Dialog
       open={open}
       onClose={() => {
-        setModal({ isOpen: false });
+        setIsOpen(false);
       }}
     >
       <Box p={2}>
@@ -88,9 +77,7 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
               color={"primary"}
               onClick={() => {
                 onSubmit();
-                setModal({
-                  isOpen: false,
-                });
+                setIsOpen(false);
                 clearFormData();
               }}
             >
@@ -103,9 +90,7 @@ const InfoModal = ({ title = "", open = false, setModal = () => {} }) => {
               variant={"contained"}
               color={"secondary"}
               onClick={() => {
-                setModal({
-                  isOpen: false,
-                });
+                setIsOpen(false);
                 clearFormData();
               }}
             >

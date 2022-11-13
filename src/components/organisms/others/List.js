@@ -7,19 +7,23 @@ import {
   Backdrop,
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import OthersInfoCard from "components/molecules/InfoCard";
 import InfoModal from "components/molecules/InfoModal";
-import {
-  useRecoilState,
-  useRecoilValueLoadable,
-} from "recoil";
-import { useOthersList } from "store/others/OthersList";
-import { OthersAddModalState } from "store/others/OthersAddModal";
+import getOthers from "api/others/get";
 
 const List = () => {
-  const itemData = useRecoilValueLoadable(useOthersList);
-  const [modal, setModal] = useRecoilState(OthersAddModalState);
+  const [othersList, setOthersList] = useState([]);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const getOthersList = async () => {
+    const res = await getOthers();
+    setOthersList(res.data)
+  }
+
+  useEffect(() => {
+    getOthersList();
+  }, []);
 
   return (
     <>
@@ -35,7 +39,8 @@ const List = () => {
             justifyContent="center"
             spacing={3}
           >
-            {itemData.getValue().data.map((item) => (
+            {console.log(othersList)}
+            {othersList.length > 0 && othersList.map((item) => (
               <Grid key={`${item.othersId}_grid`} item>
                 <OthersInfoCard
                   key={`${item.othersId}_card`}
@@ -57,21 +62,17 @@ const List = () => {
           right: "30px",
         }}
         onClick={() => {
-          setModal({
-            isOpen: true,
-          });
+          setIsOpenModal(true);
         }}
       >
         <Add />
       </Fab>
       <InfoModal
         title={"外部者を追加する"}
-        open={modal.isOpen}
-        setModal={setModal}
+        open={isOpenModal}
+        setModal={setIsOpenModal}
       />
-      <Backdrop
-        open={itemData.state === "loading"}
-      />
+      <Backdrop open={othersList.length === 0} />
     </>
   );
 };

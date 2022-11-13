@@ -1,12 +1,10 @@
 import axios from "axios";
 
-const get = async (othersId = "") => {
+const post = async ({params = {}}) => {
   try {
-    const response = await axios.get(
-      "https://my-json-server.typicode.com/CedarMan04/demo/othersData",
-      {
-        params: { othersId }
-      }
+    const response = await axios.post(
+      "https://my-json-server.typicode.com/CedarMan04/demo/othersList",
+      { params }
     );
     return response;
   } catch (error) {
@@ -21,4 +19,4 @@ const get = async (othersId = "") => {
   }
 };
 
-export default get
+export default post
