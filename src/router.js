@@ -1,7 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Backdrop } from "@material-ui/core";
-import { RecoilRoot } from "recoil";
 
 const Login = lazy(() => import("components/pages/Login"));
 const Others = lazy(() => import("components/pages/Others"));
@@ -12,7 +11,6 @@ const App = () => {
   return (
     <>
       <Router>
-        <RecoilRoot>
           <Suspense fallback={<Backdrop open={true} />}>
             <Routes>
               {/* ログイン */}
@@ -32,7 +30,6 @@ const App = () => {
               <Route exact path="/account" element={<AccountDetail />} />
             </Routes>
           </Suspense>
-        </RecoilRoot>
       </Router>
     </>
   );
