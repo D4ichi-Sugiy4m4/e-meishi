@@ -1,4 +1,8 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  CardMedia,
   Grid,
   Box,
   Paper,
@@ -7,18 +11,60 @@ import {
   Backdrop,
   Button,
 } from "@material-ui/core";
-import { Add, Check } from "@material-ui/icons";
+import { withStyles } from '@material-ui/core/styles';
+import { Add, Check, ExpandMoreSharp } from "@material-ui/icons";
 import getInfo from "api/account/get";
 import getCards from "api/get";
-import BusinessCard from "components/molecules/BusinessCard";
 import CardAddModal from "components/molecules/CardAddModal";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+
+const CustomAccordion = withStyles({
+  root: {
+    border: '1px solid rgba(0, 0, 0, .125)',
+    boxShadow: 'none',
+    '&:not(:last-child)': {
+      borderBottom: 0,
+    },
+    '&:before': {
+      display: 'none',
+    },
+    '&$expanded': {
+      margin: 'auto',
+    },
+  },
+  expanded: {},
+})(Accordion);
+
+const CustomAccordionSummary = withStyles({
+  root: {
+    backgroundColor: 'rgba(0, 0, 0, .03)',
+    borderBottom: '1px solid rgba(0, 0, 0, .125)',
+    marginBottom: -1,
+    minHeight: 56,
+    '&$expanded': {
+      minHeight: 56,
+    },
+  },
+  content: {
+    '&$expanded': {
+      margin: '12px 0',
+    },
+  },
+  expanded: {},
+})(AccordionSummary);
+
+const CustomAccordionDetails = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(AccordionDetails);
 
 const Info = () => {
   const [accountInfo, setAccountInfo] = useState({});
   const [cardList, setCardList] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [cardIndex, setCardIndex] = useState(0)
 
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
@@ -62,6 +108,25 @@ const Info = () => {
   return (
     <>
       <Box pt={8}>
+        {/* 外部者名刺一覧 */}
+        <Box p={1} style={{maxWidth: "420px"}}>
+          {cardList?.map(({created, img}, index) => (
+            <CustomAccordion elevation={0} expanded={cardIndex === index} onClick={() => {setCardIndex(index)}}>
+              <CustomAccordionSummary expandIcon={<ExpandMoreSharp/>}>
+                {created}
+              </CustomAccordionSummary>
+              <CustomAccordionDetails>
+                <CardMedia
+                  alt={`${created}_${index}`}
+                  image={img}
+                  component={"img"}
+                  style={{ objectFit: "cover" }}
+                />
+              </CustomAccordionDetails>
+            </CustomAccordion>
+          ))}
+        </Box>
+
         {/* 自分の情報 */}
         <Box p={1}>
           <Paper>
@@ -122,17 +187,6 @@ const Info = () => {
               </Button>
             </Box>
           </Paper>
-        </Box>
-
-        {/* 自分の名刺一覧 */}
-        <Box p={1}>
-          <Grid container spacing={1}>
-            {cardList?.map((card, index) => (
-              <Grid key={`${index}_grid`} item xs={12}>
-                <BusinessCard key={`${index}_card`} item={card} />
-              </Grid>
-            ))}
-          </Grid>
         </Box>
       </Box>
 
